@@ -2,15 +2,18 @@ import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
 import checkoutRouter from "./routes/checkout";
+import webhookRouter from "./routes/webhook";
 
 dotenv.config();
+console.log("Loaded Stripe key:", process.env.STRIPE_SECRET_KEY);
 
 const app = express();
 app.use(cors());
 app.use(express.json());
 
-// Mount checkout routes
 app.use("/", checkoutRouter);
+
+app.use("/webhook", webhookRouter);
 
 app.get("/", (req, res) => {
   res.send("Backend running!");

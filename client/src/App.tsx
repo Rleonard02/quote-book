@@ -14,12 +14,9 @@ function App() {
               },
             });
             const data = await res.json();
-            console.log(data);
             if (data.url) window.location.href = data.url;
-            else alert("Failed: " + data.error);
           } catch (err) {
             console.error(err);
-            alert("Error contacting server");
           }
         }}
       >
