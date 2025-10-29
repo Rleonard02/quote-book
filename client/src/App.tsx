@@ -14,6 +14,7 @@ function App() {
               },
             });
             const data = await res.json();
+            console.log(data);
             if (data.url) window.location.href = data.url;
           } catch (err) {
             console.error(err);

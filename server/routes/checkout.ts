@@ -31,8 +31,7 @@ router.post("/api/create-checkout-session", async (req: Request, res: Response) 
         allowed_countries: ["US", "CA"]
       },
     });
-    res.status(200).json({ session });
-    console.log(res);
+    res.status(200).json({  url: session.url });
   } catch (error: any) {
     console.error('Stripe API error:', error.message);
     res.status(500).json({ error: error.message });

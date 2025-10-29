@@ -8,12 +8,14 @@ dotenv.config();
 console.log("Loaded Stripe key:", process.env.STRIPE_SECRET_KEY);
 
 const app = express();
+
+app.use("/webhook", webhookRouter);
+
 app.use(cors());
+
 app.use(express.json());
 
 app.use("/", checkoutRouter);
-
-app.use("/webhook", webhookRouter);
 
 app.get("/", (req, res) => {
   res.send("Backend running!");
