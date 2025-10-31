@@ -28,24 +28,24 @@ router.post(
           expand: ["payment_intent.payment_method"],
         });
 
-        const shipping = (fullSession.payment_intent as any)?.payment_method?.shipping_details;
-        const billing = (fullSession.payment_intent as any)?.payment_method?.billing_details;
+        const shipping = fullSession.customer_details?.address;
+        const shipping_name = fullSession.customer_details?.name;
         const email = fullSession.customer_details?.email;
+
+        console.log("Stripe full session:", fullSession);
+        console.log("Shipping:", shipping);
+        console.log("Email:", email);
 
         if (!shipping || !email) {
           console.error("Missing shipping or email info; cannot create Lulu order");
           return res.status(400).json({ error: "Missing shipping/email info" });
         }
 
-        console.log("Shipping:", shipping);
-        console.log("Billing:", billing);
-        console.log("Email:", email);
-
-        // lulu api
         try {
           const token = await getLuluToken();
+          console.log(" token fetched:", token);
 
-          const luluResponse = await fetch("https://api.sandbox.lulu.com/print-jobs", {
+          const printJobResponse = await fetch("https://api.lulu.com/v2/print-jobs", {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
@@ -53,37 +53,54 @@ router.post(
             },
             body: JSON.stringify({
               contact_email: email,
-              shipping_address: {
-                name: shipping.name,
-                street1: shipping.address.line1,
-                street2: shipping.address.line2 || "",
-                city: shipping.address.city,
-                state: shipping.address.state,
-                postal_code: shipping.address.postal_code,
-                country_code: shipping.address.country,
-              },
-              items: [
-                {
-                  external_id: `stripe-${session.id}`,
+              line_items: [
+              {
+                  pod_package_id: "0550X0850BWSTDPB060UW444GXX",
                   quantity: 1,
-                  printable_normalization: {
-                    cover: { source_url: process.env.LULU_BOOK_COVER_URL },
-                    interior: { source_url: process.env.LULU_BOOK_INTERIOR_URL },
+                  title: "Me Myself and My Mind",
+                  cover: {
+                      source_url: "https://dl.dropboxusercontent.com/scl/fi/tatj7p0c696xajz83a18f/Front-Spine-Back-Spread-Halloween-FINAL.pdf?rlkey=s6e9utv7lhn4xq0refct6ahm5&st=bpsh0fhn",
                   },
-                },
-              ],
+                  interior: {
+                      source_url: "https://dl.dropboxusercontent.com/scl/fi/ck9d863hdphimh91jyqew/MANUSCRIPTHALLOWEEN.pdf?rlkey=rf45fks0ibl6fu4fv7ymj73s7&st=4mejzbnb",
+                  },
+              },
+            ],
+              shipping_address: {
+                name: shipping_name,
+                street1: shipping.line1,
+                city: shipping.city,
+                state: shipping.state,
+                postal_code: shipping.postal_code,
+                country_code: shipping.country,
+                phone_number: fullSession.customer_details?.phone,
+              },
+              shipping_level: "MAIL",
             }),
           });
 
-          const orderData = await luluResponse.json();
+          const responseText = await printJobResponse.text();
+          console.log('response text: ', responseText);
 
-          if (!luluResponse.ok) {
-            console.error("Lulu API error:", orderData);
+          const traceId = printJobResponse.headers.get("x-request-id");
+          console.log("Lulu trace ID:", traceId);
+          
+          // Log full response for debugging
+          if (!printJobResponse.ok) {
+            console.error(
+              `Lulu print job request failed: ${printJobResponse.status}`,
+              responseText
+            );
           } else {
-            console.log("✅ Lulu order created:", orderData);
+            try {
+              const jobData = JSON.parse(responseText);
+              console.log("Lulu sandbox order created:", jobData);
+            } catch (err) {
+              console.error("Failed to parse Lulu response JSON:", err, responseText);
+            }
           }
         } catch (err: any) {
-          console.error("Error sending order to Lulu:", err.message);
+          console.error("Error sending order to Lulu sandbox:", err.message);
         }
       }
 
