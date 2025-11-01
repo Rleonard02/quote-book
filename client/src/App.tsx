@@ -12,16 +12,8 @@ function App(): JSX.Element {
 
   return (
     <div className="app-root">
-      <video
-        autoPlay
-        muted
-        loop
-        id="myVideo"
-        ref={videoRef}
-      >
-        <source src="/flames.mp4" type="video/mp4" />
-        Your browser does not support HTML5 video.
-      </video>
+      <img src="/flames.gif" alt="Flames background" id="myVideo" />
+
 
       <div className="content">
         <h1>Welcome to the Henry Kudish Experience</h1>
