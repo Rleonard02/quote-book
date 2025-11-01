@@ -18,7 +18,6 @@ function App(): JSX.Element {
         loop
         id="myVideo"
         ref={videoRef}
-        playsInline
       >
         <source src="/flames.mp4" type="video/mp4" />
         Your browser does not support HTML5 video.
