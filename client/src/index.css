@@ -3,6 +3,7 @@ html, body, #root, .app-root {
   height: 100%;
   margin: 0;
   background: transparent;
+  background-color: #272626;
 }
 
 #myVideo {
@@ -52,4 +53,8 @@ html, body, #root, .app-root {
 #myBtn:hover {
   background: #ddd;
   color: black;
+}
+
+.container {
+  background-color: #272626;
 }

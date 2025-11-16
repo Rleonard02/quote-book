@@ -15,17 +15,13 @@ router.post("/api/create-checkout-session", async (req: Request, res: Response) 
       payment_method_types: ["card"],
       line_items: [
         {
-          price_data: {
-            currency: "usd",
-            product_data: { name: "Book" },
-            unit_amount: 1999, // $19.99
-          },
+          price: "price_1STujrEqBNAQKIlkIyxticox",
           quantity: 1,
         },
       ],
       mode: "payment",
       success_url: `${origin}/success`,
-      cancel_url: `${origin}/cancel`,
+      cancel_url: `${origin}`,
       billing_address_collection: "required",
       shipping_address_collection: {
         allowed_countries: ["US", "CA"]
