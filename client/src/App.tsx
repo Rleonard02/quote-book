@@ -1,6 +1,7 @@
 import React, { useRef, useState } from "react";
 import "./App.css";
 import { JSX } from "react/jsx-runtime";
+import NavBar from './components/Navbar';
 
 function App(): JSX.Element {
   const videoRef = useRef<HTMLVideoElement | null>(null);
@@ -27,16 +28,36 @@ function App(): JSX.Element {
   }
 
   return (
-    <div className="app-root">
-      <img src="/flames.gif" alt="Flames background" id="myVideo" />
+    <>
+      <NavBar></NavBar>
+      <div className="app-root">
 
-      <div className="content">
-        <h1>Welcome to the Henry Kudish Experience</h1>
-        <button id="myBtn" onClick={goToStripe}>
-          BUY THE BOOK
-        </button>
+        <div className="container">
+
+          {/* <img src="/flames.gif" alt="Flames background" id="myVideo" /> */}
+
+          <div className="qr-code">
+              <img src="/QRCode.png" alt="" />
+            </div>
+
+          <div className="content">
+
+            <h1>Welcome to the Henry Kudish Experience</h1>
+            <button id="myBtn" onClick={goToEtsy}>
+              <h2>BUY THE BOOK</h2>
+            </button>
+          </div>
+
+          <div className="qr-code">
+            <img src="/QRCode.png" alt="" />
+          </div>
+          
+        </div>
+        
+        
       </div>
-    </div>
+    </>
+    
   );
 }
 
